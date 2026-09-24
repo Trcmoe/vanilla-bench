@@ -27,4 +27,24 @@ class SetupTests(unittest.TestCase):
             def __exit__(self,*args): pass
             def read(self): return b'[{"version_type":"beta","date_published":"2026"}]'
         with patch('vanilla_bench.catalog.urlopen',return_value=Response()):
-            with self.assertRaisesRegex(ValueError,'No stable Fabric release'): resolve()
+            with self.assertRaisesRegex(ValueError,'No stable Fabric release'): resolve(['pack-a'])
+
+    def test_catalog_resolves_only_requested_projects(self):
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self,*args): pass
+            def read(self):
+                return json.dumps([{'version_type':'release','date_published':'2026-01-01',
+                                    'id':'version-id','version_number':'1.0','files':[]}]).encode()
+        with patch('vanilla_bench.catalog.urlopen',return_value=Response()) as request:
+            result = resolve(['pack-b','pack-a','pack-b'])
+        self.assertEqual([p['project'] for p in result['packs']],['pack-b','pack-a'])
+        self.assertEqual(request.call_count,2)
+        self.assertIn('/project/pack-b/version?',request.call_args_list[0].args[0].full_url)
+        self.assertIn('/project/pack-a/version?',request.call_args_list[1].args[0].full_url)
+
+    def test_catalog_requires_explicit_valid_projects(self):
+        with patch('vanilla_bench.catalog.urlopen') as request:
+            for projects in ([],None,'pack-a',[''],['pack-a?query'],['https://example.com']):
+                with self.assertRaises(ValueError): resolve(projects)
+            request.assert_not_called()

@@ -4,11 +4,11 @@
 
 ## 运行输入及隔离
 
-`vanilla-bench validate CONFIG.json` 检查配置，`vanilla-bench run CONFIG.json --output NEW_DIR` 顺序执行。输出目录必须不存在，且不能位于源实例或世界模板之内。配置要求 `minecraft_version` 为 `1.20.1`、至少一个有唯一名称及固定版本的整合包、已有的 `world_template`（含 `level.dat`）和 `probe_jar`。每个 `packs[]` 项需要 `name`、`version`、`game_dir` 和字符串数组 `command`，其中至少一个参数包含 `{game_dir}`。命令直接作为参数数组运行，不经 shell；应直接启动游戏 Java 进程，使探针报告的 PID 位于本次命令的进程树中。所有路径相对配置文件定位。`scenarios` 只允许 `static` 和 `rotate`。
+`vanilla-bench validate CONFIG.json` 检查配置，`vanilla-bench run CONFIG.json --output NEW_DIR` 顺序执行。输出目录必须不存在，且不能位于源实例或世界模板之内。配置要求 `minecraft_version` 为 `1.20.1`、至少一个有唯一名称及固定版本的实例、已有的 `world_template`（含 `level.dat`）和 `probe_jar`。每个 `packs[]` 项需要 `name`、`version`、`game_dir` 和字符串数组 `command`，其中至少一个参数包含 `{game_dir}`。命令直接作为参数数组运行，不经 shell；应直接启动游戏 Java 进程，使探针报告的 PID 位于本次命令的进程树中。所有路径相对配置文件定位。`scenarios` 只允许 `static` 和 `rotate`。
 
 默认值：`repetitions=5`、`warmup_seconds=30`、`duration_seconds=120`、`timeout_seconds=600`、`sample_interval_seconds=0.5`、`cooldown_seconds=10`、`seed=20260924`。默认覆盖的游戏选项为 `enableVsync:false`、`maxFps:260`、`pauseOnLostFocus:false`、`renderDistance:12`、`simulationDistance:8`、`fullscreen:false`、`overrideWidth:1920`、`overrideHeight:1080`。`maxFps:260` 在原版 1.20.1 的选项界面表示无限制，但仍应检查 `effective_settings` 与画面。输入世界须人工预制为旁观者、和平、白天、时间冻结，并预生成测试范围区块；配置加载器只核对 `level.dat`，不会代替人工复核这些条件。
 
-每次运行将源实例复制到独立 `game` 目录，排除源 `saves`、截图、日志与崩溃报告，再把世界模板复制为 `saves/vanilla-bench-world`。运行器在副本中写入选项并安装探针；源实例不应预装另一份同 ID 探针。每轮先随机排列全部整合包与场景，轮与轮之间不改变配置；每次启动一个新进程。运行结束后仅终止本次启动树中已记录的进程。操作系统缓存不清理，也不宣称冷启动。
+每次运行将源实例复制到独立 `game` 目录，排除源 `saves`、截图、日志与崩溃报告，再把世界模板复制为 `saves/vanilla-bench-world`。运行器在副本中写入选项并安装探针；源实例不应预装另一份同 ID 探针。每轮先随机排列全部实例与场景，轮与轮之间不改变配置；每次启动一个新进程。运行结束后仅终止本次启动树中已记录的进程。操作系统缓存不清理，也不宣称冷启动。
 
 ## 传给探针的环境变量
 
@@ -54,7 +54,7 @@
 
 ## 输出、采样和失败
 
-根目录 `results.json` 使用 `schema_version: 1`、`synthetic: false`、`metadata`、`runs`。元数据含创建时间、主机概况、世界/探针指纹、选项覆盖、预热与测量时长、随机种子、缓存策略及各实例 `mods`、`config`、`options.txt` 指纹。每次运行在 `run-NNN/` 保存 `telemetry.jsonl`、`process.log`、`run.json`；根目录随进度更新 `report.html`、`report.md`、`summary.csv`。`demo` 的 `synthetic: true` 和虚构整合包名只用于报表演示，不代表实测或排名。
+根目录 `results.json` 使用 `schema_version: 1`、`synthetic: false`、`metadata`、`runs`。元数据含创建时间、主机概况、世界/探针指纹、选项覆盖、预热与测量时长、随机种子、缓存策略及各实例 `mods`、`config`、`options.txt` 指纹。每次运行在 `run-NNN/` 保存 `telemetry.jsonl`、`process.log`、`run.json`；根目录随进度更新 `report.html`、`report.md`、`summary.csv`。`demo` 的 `synthetic: true` 和虚构实例名只用于报表演示，不代表实测或排名。
 
 `runs[]` 的核心字段为 `pack`、`version`、`scenario`、`repetition`、`run_id`、`status`（`ok`/`failed`）、`error`、`startup_ms`、`world_load_ms`、`frames_ms`、`resources`、`events`；成功时还有 `launch_to_end_s`。启动时间等于 `menu.jvm_uptime_ms`，不含启动器时间；世界加载时间等于 `world_ready - menu`，含主菜单后的自动打开调度。`events` 是已接受的边界事件；帧批次被合并到 `frames_ms`。失败运行仍写出已采集的数据、错误和 `run.json`，汇总时排除其性能指标并列出原因。
 

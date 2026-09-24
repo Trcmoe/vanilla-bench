@@ -2,9 +2,9 @@
 
 面向 Minecraft **Vanilla optimization 整合包**的可复现性能测试工具。Python 负责隔离实例、随机化运行、多轮采样和出具报告；Fabric 探针负责自动进入测试存档和采集逐帧时间。
 
-首版支持 **Minecraft 1.20.1 / Fabric / Java 17+ / Python 3.11+**。默认比较 [Fabulously Optimized](https://modrinth.com/modpack/fabulously-optimized)、[Sodium Plus](https://modrinth.com/modpack/sodiumplus) 和 [Remarkably Optimized](https://modrinth.com/modpack/remarkably)。准确拼写为 Remarkably Optimized。
+当前探针适用于 **Minecraft 1.20.1 / Fabric / Java 17+ / Python 3.11+**。工具可对用户配置的任意兼容实例进行基准测试；它不限定整合包名称或预设比较对象。
 
-这是测试工具，仓库中的演示报告使用明确标识的合成数据，不代表三个整合包的真实排名。真实结果需要在你的图形桌面、已登录的 Minecraft 实例和固定测试世界上运行。
+这是测试工具，仓库中的演示报告使用明确标识的合成数据，不代表任何真实整合包的测试结果或排名。真实结果需要在你的图形桌面、已登录的 Minecraft 实例和固定测试世界上运行。
 
 ## 测量内容
 
@@ -32,7 +32,7 @@ vanilla-bench demo --output runs/demo
 
 ## 准备一次，自动执行多轮
 
-1. **锁定版本。** [示例锁文件](examples/modrinth-lock.json)记录同为 1.20.1 的三个稳定版本：FO 5.2.8、Sodium Plus 2.2.11、Remarkably Optimized 1.15.11。用已登录的启动器分别安装对应 `.mrpack`，运行一次确保下载、账号和首次提示都处理完毕。不要混用 Minecraft 版本。可用 `vanilla-bench catalog --output local-lock.json` 重新查询；没有共同版本时命令明确失败。
+1. **选择并锁定实例。** 在 Modrinth 为每个待测项目选择兼容的 Minecraft 1.20.1 版本，并用已登录的启动器安装。启动一次，确保下载、账号和首次提示都处理完毕。记录项目 slug 与版本，确认所有实例使用相同 Minecraft 版本。需要查询候选版本时，显式列出项目：`vanilla-bench catalog --project YOUR_PROJECT_SLUG --project ANOTHER_PROJECT_SLUG --output local-lock.json`。
 2. **获取探针。** 从 [Releases](https://github.com/Trcmoe/vanilla-bench/releases/latest) 下载预编译 JAR，或自行构建： 在 `probe` 目录运行 `gradlew.bat build`（Windows）或 `./gradlew build`。构建需要 JDK 21，生成 Java 17 字节码。将配置中的 `probe_jar` 指向 `probe/build/libs/` 下不含 `-sources` 的 JAR。runner 每轮自动复制探针，不要将它放入原实例。[探针细节](probe/README.md)。
 3. **准备只读基准存档。** 新建 1.20.1 世界，预生成观察点附近区块，切为旁观者，固定坐标/朝向，关闭天气和昼夜变化、随机刻等，保存退出。复制到独立目录作为 `world_template`。以不同存档单独测试森林、村庄、实体密集场景；本版每次 suite 使用一个世界。所有实例必须在同一世界、同一观察点测量。
 4. **准备 Java 启动命令。** 建议使用支持 *Wrapper command* 的启动器，例如 Prism Launcher。按下面方法捕获每个实例的实际 Java 参数。runner 直接启动 Java，不依赖启动器窗口识别或鼠标坐标。
@@ -46,7 +46,7 @@ vanilla-bench run local-benchmark.json --output runs/comparison-01
 vanilla-bench report runs/comparison-01/results.json --output runs/comparison-01
 ```
 
-默认 5 轮、每轮每包每场景启动一个新 JVM，预热 30 秒、采集 120 秒、冷却 10 秒；`static` 固定视角、`rotate` 固定位置旋转观察。三个包两个场景共 30 次启动，预计至少 80 分钟，另加实例复制和加载时间。不要在采集中切换窗口、操作角色或打开菜单。
+默认 5 轮、每轮每实例每场景启动一个新 JVM，预热 30 秒、采集 120 秒、冷却 10 秒；`static` 固定视角、`rotate` 固定位置旋转观察。运行次数为“实例数 × 场景数 × 重复数”；预热、采集和轮间冷却的计划时间为运行次数 ×（预热时长 + 测量时长）+（运行次数 − 1）× 冷却时长，另加实例复制和加载时间。不要在采集中切换窗口、操作角色或打开菜单。
 
 每轮创建独立实例和世界副本，源存档不会被覆盖。输出占用可能较大，运行前预留磁盘空间。Ctrl+C 会清理本次启动的进程并保留已完成的数据；失败轮次会记录并继续，最终命令返回非零状态码。不会终止其他已有 Java 进程。
 
@@ -55,10 +55,10 @@ vanilla-bench report runs/comparison-01/results.json --output runs/comparison-01
 在各实例的启动器设置中临时配置 Wrapper command（替换为你的绝对路径）：
 
 ```text
-C:/path/to/vanilla-bench/.venv/Scripts/python.exe -m vanilla_bench capture --output C:/path/to/vanilla-bench/local-fo-command.json --
+C:/path/to/vanilla-bench/.venv/Scripts/python.exe -m vanilla_bench capture --output C:/path/to/vanilla-bench/local-pack-a-command.json --
 ```
 
-点击启动。该次操作仅捕获参数，**不会启动游戏**。把生成文件的整个对象填入配置的 `packs` 数组，并填写 `name` / `version`；然后移除启动器的 Wrapper command。重复另外两个实例。命令须包含独立的 `--gameDir` 参数，helper 自动替换为 `{game_dir}`；不接受未展开的 `@argfile`。禁用启动器快速加入服务器/世界功能。
+点击启动。该次操作仅捕获参数，**不会启动游戏**。把生成文件的整个对象填入配置的 `packs` 数组，并填写 `name` / `version`；然后移除启动器的 Wrapper command。对其余实例重复此步骤。命令须包含独立的 `--gameDir` 参数，helper 自动替换为 `{game_dir}`；不接受未展开的 `@argfile`。禁用启动器快速加入服务器/世界功能。
 
 捕获文件包含本地路径，可能包含登录 token：只保存在 `local*.json`，不要上传；本项目忽略这些文件，报告也不保存启动命令。账号令牌过期时重新捕获。实例的库、assets、native 路径必须保持有效；不能删掉源实例后再跑。不要使用会连接现有后台启动器的命令，否则探针环境变量及 PID 归属无法保证。
 

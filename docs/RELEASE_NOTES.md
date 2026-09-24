@@ -1,11 +1,8 @@
-Vanilla Bench v0.1.1 adds a Python benchmark runner and a Fabric 1.20.1 probe for comparing vanilla-optimization modpacks.
+Vanilla Bench v0.1.2 presents a general benchmarking workflow for user-selected compatible Minecraft instances. The catalog command now requires one or more explicit `--project` arguments; configuration examples use neutral Pack A / Pack B placeholders and no bundled real-pack version lock. The supported probe remains Minecraft 1.20.1 / Fabric and the existing probe 0.1.0 binary is unchanged.
 
-- Isolated world/instance copies, randomized repeated trials, warmup and timeouts.
+- Isolated instance and world copies, randomized repeated trials, warmup and timeouts.
 - JVM-to-menu startup, world load, frame-time/FPS tails, process CPU and RSS.
 - Offline HTML, Markdown, CSV and raw JSON reports with failure records and synthetic demo labels.
-- Pinned Modrinth metadata for Fabulously Optimized, Sodium Plus and Remarkably Optimized on 1.20.1.
-- MIT license, Chinese setup/methodology documentation, Python and Java CI.
+- Python runner and Fabric probe workflows, with Chinese setup and methodology documentation.
 
-Validation: 16 Python tests, dependency checks, and a real Gradle build/remap passed locally. The attached probe is compiled for Java 17 and requires Fabric Loader 0.16+. Actual graphical runs of all three modpacks have not been performed; no performance ranking is claimed.
-
-Patch 0.1.1 normalizes Windows short paths before checking output-directory containment. The probe binary remains version 0.1.0 and is unchanged.
+Validation: 18 Python tests and the recorded dependency checks and Gradle build/remap passed locally. The probe binary is compiled for Java 17 and requires Fabric Loader 0.16+. Actual graphical benchmark runs against user-selected instances have not been performed; no performance ranking is claimed.

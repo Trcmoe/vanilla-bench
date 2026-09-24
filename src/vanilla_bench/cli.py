@@ -44,6 +44,8 @@ def main(argv=None):
     command = sub.add_parser('demo')
     command.add_argument('--output', required=True, type=Path)
     command = sub.add_parser('catalog')
+    command.add_argument('--project', action='append', required=True,
+                         help='Modrinth project slug or ID; repeat for each pack to compare')
     command.add_argument('--minecraft', default='1.20.1')
     command.add_argument('--output', required=True, type=Path)
     command = sub.add_parser('capture', help='Launcher wrapper: capture Java arguments locally without launching')
@@ -68,7 +70,7 @@ def main(argv=None):
         elif args.action == 'catalog':
             from .catalog import resolve
             if args.output.exists(): raise ValueError('Catalog output already exists; choose a new lock file')
-            save_json(args.output, resolve(args.minecraft))
+            save_json(args.output, resolve(args.project, args.minecraft))
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:
         print(f'Error: {exc}', file=sys.stderr)

@@ -1,20 +1,24 @@
 """Resolve pinned Modrinth releases; no game/mod files are downloaded."""
 import json
+import re
 from datetime import datetime, timezone
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from . import __version__
 
-PROJECTS = ['fabulously-optimized', 'sodiumplus', 'remarkably']
 
-
-def resolve(minecraft_version='1.20.1'):
+def resolve(projects, minecraft_version='1.20.1'):
+    if not isinstance(projects, (list, tuple)) or not projects:
+        raise ValueError('Specify at least one Modrinth project slug or ID')
+    if any(not isinstance(project, str) or not re.fullmatch(r'[A-Za-z0-9_-]+', project) for project in projects):
+        raise ValueError('Modrinth projects must be slugs or IDs, not URLs')
     output = {'minecraft_version': minecraft_version,
               'resolved_utc': datetime.now(timezone.utc).isoformat(), 'packs': []}
     query = urlencode({'game_versions': json.dumps([minecraft_version]),
                        'loaders': json.dumps(['fabric']), 'include_changelog': 'false'})
-    for project in PROJECTS:
+    for project in dict.fromkeys(projects):
         request = Request(f'https://api.modrinth.com/v2/project/{project}/version?{query}',
-                          headers={'User-Agent': 'Trcmoe/vanilla-bench/0.1.1 (GitHub)'})
+                          headers={'User-Agent': f'Trcmoe/vanilla-bench/{__version__} (GitHub)'})
         with urlopen(request, timeout=30) as response:
             versions = json.load(response)
         versions = sorted((v for v in versions if v['version_type'] == 'release'),

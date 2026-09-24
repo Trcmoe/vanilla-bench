@@ -28,21 +28,15 @@
   },
   "packs": [
     {
-      "name": "Fabulously Optimized",
-      "version": "5.2.8",
-      "game_dir": "C:/MinecraftBenchmark/instances/fo/.minecraft",
+      "name": "Pack A",
+      "version": "REPLACE_WITH_PINNED_VERSION",
+      "game_dir": "C:/MinecraftBenchmark/instances/pack-a/.minecraft",
       "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
     },
     {
-      "name": "Sodium Plus",
-      "version": "2.2.11",
-      "game_dir": "C:/MinecraftBenchmark/instances/sodiumplus/.minecraft",
-      "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
-    },
-    {
-      "name": "Remarkably Optimized",
-      "version": "1.15.11",
-      "game_dir": "C:/MinecraftBenchmark/instances/remarkably/.minecraft",
+      "name": "Pack B",
+      "version": "REPLACE_WITH_PINNED_VERSION",
+      "game_dir": "C:/MinecraftBenchmark/instances/pack-b/.minecraft",
       "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
     }
   ]
