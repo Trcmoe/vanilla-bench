@@ -257,7 +257,8 @@ def one_run(config, pack, scenario, repetition, directory):
 def run_suite(config, output_dir):
     output = Path(output_dir).resolve()
     for source in [config['world_template'], *[p['game_dir'] for p in config['packs']]]:
-        if output == Path(source) or output.is_relative_to(Path(source)):
+        source = Path(source).resolve()
+        if output == source or output.is_relative_to(source):
             raise ValueError('Output directory must be outside source instances and world template')
     output.mkdir(parents=True, exist_ok=False)
     metadata = {'host': host_info(), 'minecraft_version': config['minecraft_version'],
