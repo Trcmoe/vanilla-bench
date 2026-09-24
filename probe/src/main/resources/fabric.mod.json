@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "vanillabenchprobe",
+  "version": "0.1.0",
+  "name": "Vanilla Bench Probe",
+  "description": "Automated singleplayer frametime instrumentation for Minecraft 1.20.1.",
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.vanillabench.BenchInitializer"]
+  },
+  "mixins": ["vanillabenchprobe.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "1.20.1",
+    "java": ">=17"
+  }
+}

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vanilla-bench"
+version = "0.1.0"
+description = "Reproducible Minecraft vanilla-optimization modpack benchmarks"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Trcmoe"}]
+dependencies = ["psutil>=5.9,<8"]
+
+[project.scripts]
+vanilla-bench = "vanilla_bench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

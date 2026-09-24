@@ -1,0 +1,49 @@
+{
+  "minecraft_version": "1.20.1",
+  "world_template": "C:/MinecraftBenchmark/world-template",
+  "probe_jar": "../probe/build/libs/vanilla-bench-probe-0.1.0.jar",
+  "repetitions": 5,
+  "warmup_seconds": 30,
+  "duration_seconds": 120,
+  "cooldown_seconds": 10,
+  "timeout_seconds": 600,
+  "sample_interval_seconds": 0.5,
+  "seed": 20260924,
+  "scenarios": ["static", "rotate"],
+  "options": {
+    "enableVsync": "false",
+    "maxFps": "260",
+    "pauseOnLostFocus": "false",
+    "renderDistance": "12",
+    "simulationDistance": "8",
+    "fullscreen": "false",
+    "overrideWidth": "1920",
+    "overrideHeight": "1080",
+    "graphicsMode": "1",
+    "renderClouds": "false",
+    "particles": "0",
+    "entityDistanceScaling": "1.0",
+    "mipmapLevels": "4",
+    "fov": "0.0"
+  },
+  "packs": [
+    {
+      "name": "Fabulously Optimized",
+      "version": "5.2.8",
+      "game_dir": "C:/MinecraftBenchmark/instances/fo/.minecraft",
+      "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
+    },
+    {
+      "name": "Sodium Plus",
+      "version": "2.2.11",
+      "game_dir": "C:/MinecraftBenchmark/instances/sodiumplus/.minecraft",
+      "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
+    },
+    {
+      "name": "Remarkably Optimized",
+      "version": "1.15.11",
+      "game_dir": "C:/MinecraftBenchmark/instances/remarkably/.minecraft",
+      "command": ["REPLACE_WITH_CAPTURED_JAVA_COMMAND", "--gameDir", "{game_dir}"]
+    }
+  ]
+}
