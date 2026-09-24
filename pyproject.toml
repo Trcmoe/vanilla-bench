@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vanilla-bench"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reproducible Minecraft vanilla-optimization modpack benchmarks"
 readme = "README.md"
 requires-python = ">=3.11"

@@ -14,7 +14,7 @@ def resolve(minecraft_version='1.20.1'):
                        'loaders': json.dumps(['fabric']), 'include_changelog': 'false'})
     for project in PROJECTS:
         request = Request(f'https://api.modrinth.com/v2/project/{project}/version?{query}',
-                          headers={'User-Agent': 'Trcmoe/vanilla-bench/0.1.0 (GitHub)'})
+                          headers={'User-Agent': 'Trcmoe/vanilla-bench/0.1.1 (GitHub)'})
         with urlopen(request, timeout=30) as response:
             versions = json.load(response)
         versions = sorted((v for v in versions if v['version_type'] == 'release'),

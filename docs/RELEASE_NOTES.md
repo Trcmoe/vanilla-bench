@@ -1,4 +1,4 @@
-Vanilla Bench v0.1.0 adds a Python benchmark runner and a Fabric 1.20.1 probe for comparing vanilla-optimization modpacks.
+Vanilla Bench v0.1.1 adds a Python benchmark runner and a Fabric 1.20.1 probe for comparing vanilla-optimization modpacks.
 
 - Isolated world/instance copies, randomized repeated trials, warmup and timeouts.
 - JVM-to-menu startup, world load, frame-time/FPS tails, process CPU and RSS.
@@ -7,3 +7,5 @@ Vanilla Bench v0.1.0 adds a Python benchmark runner and a Fabric 1.20.1 probe fo
 - MIT license, Chinese setup/methodology documentation, Python and Java CI.
 
 Validation: 16 Python tests, dependency checks, and a real Gradle build/remap passed locally. The attached probe is compiled for Java 17 and requires Fabric Loader 0.16+. Actual graphical runs of all three modpacks have not been performed; no performance ranking is claimed.
+
+Patch 0.1.1 normalizes Windows short paths before checking output-directory containment. The probe binary remains version 0.1.0 and is unchanged.

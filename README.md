@@ -33,7 +33,7 @@ vanilla-bench demo --output runs/demo
 ## 准备一次，自动执行多轮
 
 1. **锁定版本。** [示例锁文件](examples/modrinth-lock.json)记录同为 1.20.1 的三个稳定版本：FO 5.2.8、Sodium Plus 2.2.11、Remarkably Optimized 1.15.11。用已登录的启动器分别安装对应 `.mrpack`，运行一次确保下载、账号和首次提示都处理完毕。不要混用 Minecraft 版本。可用 `vanilla-bench catalog --output local-lock.json` 重新查询；没有共同版本时命令明确失败。
-2. **构建探针。** 在 `probe` 目录运行 `gradlew.bat build`（Windows）或 `./gradlew build`。构建需要 JDK 21，生成 Java 17 字节码。将配置中的 `probe_jar` 指向 `probe/build/libs/` 下不含 `-sources` 的 JAR。runner 每轮自动复制探针，不要将它放入原实例。[探针细节](probe/README.md)。
+2. **获取探针。** 从 [Releases](https://github.com/Trcmoe/vanilla-bench/releases/latest) 下载预编译 JAR，或自行构建： 在 `probe` 目录运行 `gradlew.bat build`（Windows）或 `./gradlew build`。构建需要 JDK 21，生成 Java 17 字节码。将配置中的 `probe_jar` 指向 `probe/build/libs/` 下不含 `-sources` 的 JAR。runner 每轮自动复制探针，不要将它放入原实例。[探针细节](probe/README.md)。
 3. **准备只读基准存档。** 新建 1.20.1 世界，预生成观察点附近区块，切为旁观者，固定坐标/朝向，关闭天气和昼夜变化、随机刻等，保存退出。复制到独立目录作为 `world_template`。以不同存档单独测试森林、村庄、实体密集场景；本版每次 suite 使用一个世界。所有实例必须在同一世界、同一观察点测量。
 4. **准备 Java 启动命令。** 建议使用支持 *Wrapper command* 的启动器，例如 Prism Launcher。按下面方法捕获每个实例的实际 Java 参数。runner 直接启动 Java，不依赖启动器窗口识别或鼠标坐标。
 5. **创建配置。** 复制 `examples/benchmark.json` 为 `local-benchmark.json`；填写存档、探针、每个实例路径、版本和命令。图形功能、资源包、Java 可执行文件与 JVM 堆参数也需要统一。`options` 覆盖标准选项；各优化模组自己的设置请在源实例中事先调整。
